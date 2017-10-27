@@ -1,0 +1,45 @@
+<div class="container">
+  <div id="nav">
+    <ul>
+      <li class = "nav_li"><a href="/">Home</a></li>
+      <% if session[:user_id] %>
+      <li class = "nav_li"><a href="/users/<%=@you.id%>"><%=@you.username%></a></li>
+      <li class = "nav_li"><a href="/logout">Logout</a></li>
+      <% end %>
+    </ul>
+  </div>
+  <% if @you == @user %>
+    <h1 id="user_greeting">Welcome to your profile, <%=@user.username%></h1>
+    <div class="profile-content">
+      <h2>You currently have <%=@user.items.count%> items posted for auction:</h2>
+        <% @user.items.each do |item| %>
+          <p class="user-item"><a href="/items/<%=item.id%>"<strong><%=item.title%></strong></a> - Starting price: $<%=item.price%>
+          <form action="/items/<%=item.id%>/edit", method="get">
+            <button type="submit">edit</button>
+          </form>
+          <form action="/items/<%=item.id%>", method="post">
+            <button type="submit", name="_method", value="delete">delete</button>
+          </form>
+        </p>
+        <% end %>
+      <p>...</p>
+      <a href="/items/new">>> Add an item for auction <<</a>
+      <div>
+        <h3> Your current bids </h3>
+        <% @you.bids.each do |bid| %>
+          <p><a href="/items/<%=bid.item.id%>"><%=bid.item.title%></a> - $<%=bid.amount%> bid submitted on <%=bid.created_at%>
+        <% end %>
+      </div>
+    </div>
+  <% elsif @you != @user %>
+    <div class="profile-content">
+      <h1 id="user_greeting"><%=@user.username%></h1>
+      <h2><%=@user.items.count%> items posted for auction:</h2>
+      <% @user.items.each do |item| %>
+        <p class="user-item"><a href="/items/<%=item.id%>"<strong><%=item.title%></strong></a> - Starting price: $<%=item.price%></p>
+        <p><strong>Auction began: </strong><%=item.start_date%></p>
+        <p><strong>Auction ends: </strong><%=item.end_date%></p>
+      <% end %>
+    </div>
+  <% end %>
+</div>

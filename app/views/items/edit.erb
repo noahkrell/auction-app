@@ -1,0 +1,29 @@
+<div class="container">
+  <div id="nav">
+    <ul>
+      <li class = "nav_li"><a href="/">Home</a></li>
+      <% if session[:user_id] %>
+      <li class = "nav_li"><a href="/users/<%=@user.id%>"><%=@user.username%></a></li>
+      <li class = "nav_li"><a href="/logout">Logout</a></li>
+      <% end %>
+    </ul>
+  </div>
+  <div class="new_item_form">
+    <form action="/items/<%=@item.id%>" method="post">
+        <input type="hidden" name="_method" value="PUT">
+        <textarea cols="70" rows="1" type="text" name="title" value="" placeholder="Post Item Title Here"><%=@item.title%></textarea><br><br>
+        <textarea cols="50" rows="1" type="float" name="price" value="" placeholder="Starting/minimum price"><%=@item.price%></textarea><br><br>
+        <span><strong>Condition?  </strong></span><select id="condition-dropdown" name="condition">
+          <option value="Excellent">Excellent</option>
+          <option value="Good">Good</option>
+          <option value="Fair">Fair</option>
+          <option value="Bad">Bad</option>
+          <option value="Do not buy">Do not buy</option>
+        </select><br><br>
+        <textarea cols="70" rows="8" type="text" name="description" value="" placeholder="Item description here"><%=@item.description%></textarea><br><br>
+        <span><strong>Item auction start date: </strong></span><input type="date" name="start_date" value="<%=@item.start_date%>">
+        <span><strong>Item auction end date: </strong></span><input type="date" name="end_date" value="<%=@item.start_date%>"><br><br>
+        <input class="new-item-submit" type="submit" value="SUBMIT ITEM FOR AUCTION">
+    </form>
+  </div>
+</div>

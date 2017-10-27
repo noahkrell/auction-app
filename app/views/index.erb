@@ -1,0 +1,49 @@
+<div class="container">
+  <div id="nav">
+    <ul>
+      <li class = "nav_li"><a href="/">Home</a></li>
+      <% if session[:user_id] %>
+      <li class = "nav_li"><a href="/users/<%=session[:user_id]%>"><%=@user.username%></a></li>
+      <li class = "nav_li"><a href="/logout">Logout</a></li>
+      <% end %>
+    </ul>
+  </div>
+  <div class="forms">
+    <h1>Welcome to the DBC Auction App</h1>
+    <% if !session[:user_id] %>
+    <h2>Login to start bidding/posting:</h2>
+    <form action="/login", method="post">
+      <label><b>Email</b></label>
+      <input type="text" placeholder="Enter Email" name="email" required>
+      <label><b>Password</b></label>
+      <input type="password" placeholder="Enter Password" name="password" required>
+      <button type="submit">Login</button>
+    </form>
+    <p style="color:red;""><%= @login_error if @login_error%></p>
+
+    <pr>OR</pr>
+
+    <h2>Create an account:</h2>
+    <p style="color:blue;""><%= @register_error if @register_error%></p>
+    <form action="/register", method="post">
+      <label><b>Username:</b></label>
+      <input type="text" placeholder="Enter Desired Username" name="username" required><br>
+      <label><b>Email:</b></label>
+      <input type="text" placeholder="Enter Email" name="email" required><br>
+      <label><b>Password:</b></label>
+      <input type="password" placeholder="Enter Password" name="password" required>
+      <br>
+      <button type="submit">Create Account</button>
+    </form>
+    <% end %>
+  </div>
+  <div class="item-list">
+    <h2>Current items up for auction:</h2>
+    <% @items.each do |item| %>
+      <% if (item.end_date >= Date.current) && (item.start_date <= Date.current) %>
+        <p class="user-item"><a href="/items/<%=item.id%>"<strong><%=item.title%></strong></a><br>
+          <strong>Starting price:</strong> $<%=item.price%> - <strong>Auction ends: </strong><%=item.end_date%></p>
+      <% end %>
+    <% end %>
+  </div>
+</div>

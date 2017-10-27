@@ -1,0 +1,53 @@
+<div class="container">
+  <div id="nav">
+    <ul>
+      <li class = "nav_li"><a href="/">Home</a></li>
+      <% if session[:user_id] %>
+      <li class = "nav_li"><a href="/users/<%=@user.id%>"><%=@user.username%></a></li>
+      <li class = "nav_li"><a href="/logout">Logout</a></li>
+      <% end %>
+    </ul>
+  </div>
+  <div class="item-content">
+    <h1><%=@item.title%></h1><span class="user-profile-link"><a href="/users/<%=@item.owner.id%>"><%=@item.owner.username%></a></span>
+    <p><strong>Starting price: </strong>$<%=@item.price%> ... <strong>Condition: </strong><%=@item.condition%></p>
+    <p><%=@item.description%></p>
+    <p><strong>Auction began: </strong><%=@item.start_date%></p>
+    <p><strong>Auction ends: </strong><%=@item.end_date%></p>
+  </div>
+  <% if session[:user_id]%>
+    <div class="bidding">
+      <h1>Bidding</h1>
+      <% if @item.owner == @user %>
+        <p> There are currently <%=@item.bids.count%> bids on your item <%if @item.bids.count > 0%>from the following bidders:<%end%></p>
+        <% @item.bids.each do |bid| %>
+          <p><a href="/users/<%=bid.bidder.id%>"><%=bid.bidder.username%></a> - $<%=bid.amount%> - on <%=bid.created_at%></p>
+        <%end%>
+      <% elsif @item.bidders.include?(@user) %>
+        <p>Number of bidders: <%=@item.bidders.count%></p>
+        <p> <span style="color:red;">You already bid</span> $<%=@bid.amount%> on this item on <%=@bid.created_at%></p>
+      <% else %>
+        <p>Number of bidders: <%=@item.bidders.count%></p>
+        <h3>Place a bid on this item:</h3>
+        <form action="/users/<%=session[:user_id]%>/items/<%=@item.id%>/bid" method="post">
+          <input type="decimal" name="amount" placeholder="Your bid goes here">
+          <input type="submit" value="SUBMIT BID">
+        </form>
+        <p>OR... BUY IT NOW</span> FOR $<%=@item.price%></p>
+        <form action="/charge" method="POST">
+          <input name="price" value="<%=@item.price%>">
+          <script
+            src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+            data-key="pk_test_hf0QvABo1coUryy1nD6mDSxv"
+            data-amount=<%=@item.price * 100%>
+            data-name="Stripe.com"
+            data-description="Widget"
+            data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
+            data-locale="auto"
+            data-zip-code="true">
+          </script>
+        </form>
+      <% end %>
+    </div>
+  <% end %>
+</div>
